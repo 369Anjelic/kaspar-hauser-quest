@@ -1,5 +1,7 @@
 {
   "version": 2,
+  "buildCommand": "echo 'Static build'",
+  "outputDirectory": "public",
   "builds": [
     {
       "src": "api/index.js",
@@ -10,12 +12,10 @@
     {
       "src": "/api/(.*)",
       "dest": "api/index.js"
-    }
-  ],
-  "rewrites": [
+    },
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "src": "/.*",
+      "dest": "/index.html"
     }
   ]
 }
