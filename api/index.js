@@ -141,7 +141,7 @@ app.get('/api/health', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/index.html'));
+  res.sendFile(path.join(__dirname, '../public/kaspar-quest-integrated.html'));
 });
 
 app.get('/:file(\\w+\\.html)', (req, res) => {
@@ -149,7 +149,7 @@ app.get('/:file(\\w+\\.html)', (req, res) => {
 });
 
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/index.html'));
+  res.sendFile(path.join(__dirname, '../public/kaspar-quest-integrated.html'));
 });
 
 module.exports = app;
