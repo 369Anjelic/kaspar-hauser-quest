@@ -254,6 +254,217 @@
     #unlock-btn, #auto-answer-btn { background:#00ff00; color:#000; border:none; padding:0.5rem 1rem; border-radius:4px; margin:0.5rem 0; cursor:pointer; font-weight:700; width:100%; }
     #unlock-btn:hover, #auto-answer-btn:hover { background:#00dd00; }
     #unlock-btn.unlocked { background:#ff5500; }
+
+    /* CHARACTERS SECTION */
+    .characters-section { background:var(--bg); }
+    .characters-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.5rem; margin-bottom:3rem; }
+    .character-card {
+      background:var(--surface); border:2px solid var(--border); border-radius:10px;
+      padding:1.5rem; cursor:pointer; transition:all 0.3s ease;
+      position:relative; overflow:hidden;
+    }
+    .character-card:hover {
+      border-color:var(--primary); transform:translateY(-6px);
+      box-shadow:0 8px 24px rgba(57,135,184,0.2);
+    }
+    .character-card.ritter { border-top:4px solid #3987b8; }
+    .character-card.hexe { border-top:4px solid #6c3483; }
+    .character-card.narr { border-top:4px solid #d4af37; }
+    .character-card.kaspar { border-top:4px solid #555; }
+
+    .character-avatar {
+      font-size:3rem; margin-bottom:1rem; text-align:center;
+      width:80px; height:80px; display:flex; align-items:center;
+      justify-content:center; background:rgba(57,135,184,0.1);
+      border-radius:50%; margin-left:auto; margin-right:auto;
+    }
+    .character-card.ritter .character-avatar { background:rgba(57,135,184,0.15); }
+    .character-card.hexe .character-avatar { background:rgba(108,52,131,0.15); }
+    .character-card.narr .character-avatar { background:rgba(212,175,55,0.15); }
+    .character-card.kaspar .character-avatar { background:rgba(85,85,85,0.15); }
+
+    .character-name {
+      font-size:1.2rem; font-weight:700; color:var(--text);
+      margin-bottom:0.5rem; text-align:center;
+    }
+    .character-role {
+      font-size:0.75rem; letter-spacing:2px; text-transform:uppercase;
+      color:var(--primary); margin-bottom:1rem; text-align:center;
+      font-weight:700;
+    }
+    .character-quote {
+      font-style:italic; color:var(--text); font-size:0.95rem;
+      margin-bottom:1rem; line-height:1.6; border-left:3px solid var(--primary);
+      padding-left:1rem;
+    }
+    .character-details {
+      background:var(--bg); border-radius:6px; padding:1rem;
+      margin-bottom:1rem; font-size:0.875rem; color:var(--text-muted);
+    }
+    .character-details p { margin:0.5rem 0; }
+    .character-details strong { color:var(--text); font-weight:600; }
+
+    .character-abilities {
+      font-size:0.8rem; color:var(--text);
+      background:rgba(57,135,184,0.05); padding:0.75rem;
+      border-radius:6px; line-height:1.6;
+    }
+    .character-ability-item {
+      margin:0.4rem 0; padding-left:1rem;
+    }
+    .character-ability-item::before { content:'✦ '; color:var(--primary); font-weight:700; margin-left:-0.7rem; }
+
+    .character-click-hint {
+      text-align:center; margin-top:1rem; padding-top:1rem;
+      border-top:1px solid var(--border); font-size:0.8rem;
+      color:var(--text-muted); display:flex; align-items:center;
+      justify-content:center; gap:0.4rem;
+    }
+    .character-click-hint::after { content:'›'; margin-left:0.3rem; }
+
+    .character-featured {
+      background:var(--surface); border:2px solid var(--primary);
+      border-radius:10px; padding:2rem; display:grid;
+      grid-template-columns:250px 1fr; gap:2rem; align-items:center;
+      margin-top:2rem;
+    }
+    .character-featured-img {
+      width:100%; aspect-ratio:1; background:linear-gradient(135deg, var(--primary) 0%, #5ba3c8 100%);
+      border-radius:8px; display:flex; align-items:center; justify-content:center;
+      font-size:5rem;
+    }
+    .character-featured h3 {
+      font-size:1.4rem; color:var(--text); margin-bottom:0.5rem;
+    }
+    .character-featured .character-quote {
+      margin-bottom:1.5rem; color:var(--primary); font-size:1rem;
+    }
+    .character-featured p {
+      font-size:0.95rem; color:var(--text-muted); margin-bottom:1rem; line-height:1.7;
+    }
+    .character-featured .btn { margin-top:1rem; }
+
+    /* CHARACTER DETAIL MODAL */
+    #character-modal { position:fixed; inset:0; background:rgba(0,0,0,0.9); display:none; align-items:center; justify-content:center; z-index:2000; padding:1rem; overflow-y:auto; }
+    .character-modal-box {
+      background:var(--surface); border:1px solid var(--border); border-radius:12px;
+      padding:2.5rem; width:100%; max-width:700px; position:relative;
+    }
+    .character-modal-close {
+      position:absolute; top:1rem; right:1.5rem; background:none;
+      border:none; font-size:1.5rem; cursor:pointer; color:var(--text-muted);
+    }
+    .character-modal-close:hover { color:var(--text); }
+    .character-modal-header {
+      display:flex; align-items:center; gap:2rem; margin-bottom:2rem;
+      padding-bottom:1.5rem; border-bottom:2px solid var(--border);
+    }
+    .character-modal-avatar {
+      font-size:4rem; width:120px; height:120px;
+      background:rgba(57,135,184,0.1); border-radius:50%;
+      display:flex; align-items:center; justify-content:center; flex-shrink:0;
+    }
+    .character-modal-info h2 {
+      font-size:1.8rem; color:var(--text); margin-bottom:0.3rem;
+    }
+    .character-modal-role {
+      font-size:0.8rem; letter-spacing:2px; text-transform:uppercase;
+      color:var(--primary); font-weight:700; margin-bottom:0.5rem;
+    }
+    .character-modal-quote {
+      font-style:italic; color:var(--primary); font-size:1.05rem; line-height:1.6;
+    }
+    .character-modal-section { margin-bottom:2rem; }
+    .character-modal-section h3 {
+      font-size:1.1rem; color:var(--text); margin-bottom:1rem;
+      padding-bottom:0.5rem; border-bottom:2px solid var(--primary);
+    }
+    .character-modal-section p {
+      font-size:0.95rem; color:var(--text-muted); margin-bottom:0.75rem; line-height:1.7;
+    }
+    .character-modal-abilities {
+      background:var(--bg); padding:1rem; border-radius:6px;
+    }
+    .character-modal-ability {
+      margin:0.75rem 0; padding:0.75rem 0; border-bottom:1px solid var(--border);
+    }
+    .character-modal-ability:last-child { border-bottom:none; }
+    .character-modal-ability strong { color:var(--text); font-size:0.95rem; }
+    .character-modal-ability-desc {
+      font-size:0.85rem; color:var(--text-muted); margin-top:0.3rem; line-height:1.5;
+    }
+
+    @media(max-width:768px) {
+      .character-featured { grid-template-columns:1fr; }
+      .character-featured-img { width:100%; height:250px; }
+      .character-modal-header { flex-direction:column; text-align:center; }
+      .characters-grid { grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1rem; }
+    }
+
+    /* TEST-RUNDGANG SECTION */
+    .testrun-section { background:linear-gradient(135deg, var(--primary) 0%, #5ba3c8 50%, #3e6b8f 100%); color:white; position:relative; overflow:hidden; }
+    .testrun-section::before {
+      content:''; position:absolute; inset:0;
+      background:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><defs><filter id="feTurbulence2"><feTurbulence type="fractalNoise" baseFrequency="0.003" numOctaves="4" result="noise"/></filter></defs><g fill="rgba(255,255,255,0.05)" filter="url(%23feTurbulence2)"><circle cx="200" cy="150" r="100"/><circle cx="1000" cy="400" r="150"/><polygon points="600,50 700,150 500,150"/></g></svg>') repeat;
+      opacity:0.4; z-index:0;
+    }
+    .testrun-content { position:relative; z-index:1; }
+    .testrun-headline { font-size:clamp(1.4rem,3vw,2rem); font-weight:700; margin-bottom:0.5rem; line-height:1.2; }
+    .testrun-date { font-size:1.1rem; opacity:0.95; margin-bottom:2rem; font-weight:300; }
+    .testrun-grid { display:grid; grid-template-columns:1fr 1fr; gap:3rem; align-items:start; margin-bottom:2rem; }
+    .testrun-main h3 { font-size:1.5rem; margin-bottom:1.5rem; font-weight:700; }
+    .testrun-main p { font-size:0.95rem; margin-bottom:1.25rem; line-height:1.7; opacity:0.95; }
+    .testrun-main strong { font-weight:600; }
+    .testrun-highlight { background:rgba(255,255,255,0.15); padding:1.5rem; border-radius:8px; margin:1.5rem 0; border-left:4px solid rgba(255,255,255,0.8); }
+    .testrun-highlight h4 { font-size:1rem; margin-bottom:0.5rem; font-weight:700; }
+    .testrun-highlight p { margin:0.5rem 0; font-size:0.9rem; }
+
+    .testrun-side { background:rgba(255,255,255,0.1); padding:1.5rem; border-radius:10px; border:2px solid rgba(255,255,255,0.3); }
+    .testrun-side h4 { font-size:1rem; font-weight:700; margin-bottom:1rem; display:flex; align-items:center; gap:0.5rem; }
+    .testrun-side-item { margin-bottom:1rem; padding-bottom:1rem; border-bottom:1px solid rgba(255,255,255,0.2); }
+    .testrun-side-item:last-child { border-bottom:none; margin-bottom:0; padding-bottom:0; }
+    .testrun-side-item strong { display:block; margin-bottom:0.3rem; font-size:0.95rem; }
+    .testrun-side-item p { font-size:0.85rem; opacity:0.9; margin:0; }
+
+    .testrun-cta { margin-top:2rem; display:flex; gap:1rem; flex-wrap:wrap; }
+    .testrun-cta .btn { background:white; color:var(--primary); font-weight:700; padding:12px 28px; }
+    .testrun-cta .btn:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,0.2); }
+    .testrun-cta .btn-secondary { background:transparent; color:white; border:2px solid white; }
+    .testrun-cta .btn-secondary:hover { background:rgba(255,255,255,0.1); }
+
+    .testrun-counter { background:rgba(255,255,255,0.2); padding:1rem 1.5rem; border-radius:8px; display:inline-block; margin-top:1rem; }
+    .testrun-counter .label { font-size:0.8rem; opacity:0.8; letter-spacing:1px; text-transform:uppercase; }
+    .testrun-counter .number { font-size:2rem; font-weight:700; margin-top:0.3rem; }
+
+    /* SIGNUP MODAL */
+    #signup-modal { position:fixed; inset:0; background:rgba(0,0,0,0.9); display:none; align-items:center; justify-content:center; z-index:2000; padding:1rem; }
+    .signup-box { background:var(--surface); border-radius:12px; padding:2.5rem; width:100%; max-width:500px; position:relative; color:var(--text); }
+    .signup-box h2 { font-size:1.6rem; color:var(--primary); margin-bottom:0.5rem; }
+    .signup-box-sub { color:var(--text-muted); margin-bottom:1.5rem; }
+    .signup-form { display:flex; flex-direction:column; gap:1rem; }
+    .signup-form input, .signup-form textarea {
+      border:1px solid var(--border); border-radius:6px; padding:0.75rem 1rem;
+      font-family:'Plus Jakarta Sans',sans-serif; font-size:0.9rem; color:var(--text);
+      background:var(--bg); outline:none; transition:border-color 0.2s;
+    }
+    .signup-form input:focus, .signup-form textarea:focus {
+      border-color:var(--primary); box-shadow:0 0 0 3px rgba(57,135,184,0.1);
+    }
+    .signup-form textarea { resize:vertical; min-height:80px; }
+    .signup-form-buttons { display:flex; gap:1rem; margin-top:0.5rem; }
+    .signup-form-buttons button { flex:1; padding:0.75rem; border:none; border-radius:6px; font-weight:600; cursor:pointer; transition:all 0.2s; }
+    .signup-form-buttons .btn-submit { background:var(--primary); color:white; }
+    .signup-form-buttons .btn-submit:hover { background:var(--primary-dark); }
+    .signup-form-buttons .btn-cancel { background:var(--bg); color:var(--text); border:1px solid var(--border); }
+    .signup-form-buttons .btn-cancel:hover { border-color:var(--primary); color:var(--primary); }
+    .signup-close { position:absolute; top:1rem; right:1rem; background:none; border:none; font-size:1.5rem; cursor:pointer; color:var(--text-muted); }
+    .signup-close:hover { color:var(--text); }
+
+    @media(max-width:768px) {
+      .testrun-grid { grid-template-columns:1fr; gap:1.5rem; }
+      .testrun-cta { flex-direction:column; }
+      .testrun-cta .btn { width:100%; text-align:center; }
+    }
   </style>
 </head>
 <body>
@@ -274,6 +485,8 @@
       <a href="#map" data-i18n="nav_map">Karte</a>
       <a href="#route" data-i18n="nav_route">Route</a>
       <a href="#story" data-i18n="nav_story">Geschichte</a>
+      <a href="#characters" data-i18n="nav_characters">Rollen</a>
+      <a href="#testrun" data-i18n="nav_testrun">Test 25.5</a>
       <a href="#leaderboard" data-i18n="nav_lb">Rangliste</a>
       <a href="#faq" data-i18n="nav_faq">FAQ</a>
     </nav>
@@ -487,6 +700,197 @@
     </div>
   </div>
 </section>
+
+<!-- CHARACTERS -->
+<section class="characters-section" id="characters">
+  <div class="container">
+    <p class="section-label">Die Rollen</p>
+    <h2 class="section-title">Wer wirst du sein?</h2>
+    <p class="section-sub">Jede Rolle hat ihre Stärke, ihr Geheimnis und ihren Preis. Klicke auf eine Karte, um mehr zu erfahren.</p>
+
+    <div class="characters-grid">
+      <!-- RITTER -->
+      <div class="character-card ritter" onclick="openCharacterModal('ritter')">
+        <div class="character-avatar">⚔️</div>
+        <h3 class="character-name">Der Ritter</h3>
+        <p class="character-role">Anführer</p>
+        <p class="character-quote">"Ich entscheide. Ich trage die Konsequenz."</p>
+        <div class="character-details">
+          <p><strong>Deine Kraft:</strong> Du wählst, wohin die Gruppe geht.</p>
+          <p><strong>Dein Preis:</strong> Wenn du falsch liegst, verliert die ganze Gruppe.</p>
+        </div>
+        <div class="character-click-hint">Mehr erfahren</div>
+      </div>
+
+      <!-- HEXE -->
+      <div class="character-card hexe" onclick="openCharacterModal('hexe')">
+        <div class="character-avatar">🔮</div>
+        <h3 class="character-name">Die Hexe</h3>
+        <p class="character-role">Wahrsagerin</p>
+        <p class="character-quote">"Ich kenne den Preis. Und ich zahle ihn."</p>
+        <div class="character-details">
+          <p><strong>Deine Kraft:</strong> Exklusive Informationen nur für dich.</p>
+          <p><strong>Dein Preis:</strong> Mit großer Einsicht kommt große Verantwortung.</p>
+        </div>
+        <div class="character-click-hint">Mehr erfahren</div>
+      </div>
+
+      <!-- NARR -->
+      <div class="character-card narr" onclick="openCharacterModal('narr')">
+        <div class="character-avatar">🃏</div>
+        <h3 class="character-name">Der Narr</h3>
+        <p class="character-role">Kritiker</p>
+        <p class="character-quote">"Alle liegen falsch. Das ist mein Moment."</p>
+        <div class="character-details">
+          <p><strong>Deine Kraft:</strong> Du darfst alles in Frage stellen.</p>
+          <p><strong>Dein Preis:</strong> Deine Punkte sind der Gruppe gewidmet.</p>
+        </div>
+        <div class="character-click-hint">Mehr erfahren</div>
+      </div>
+    </div>
+
+    <!-- KASPAR FEATURED -->
+    <div class="character-featured">
+      <div class="character-featured-img">👻</div>
+      <div>
+        <h3>Kaspar Hauser — Dein Guide</h3>
+        <p class="character-quote">"Ich war verloren. Nun führe ich euch."</p>
+        <p>
+          Am 26. Mai 1828 tauchte Kaspar Hauser auf dem Unschlittplatz auf. Woher er kam, wer er war — niemand weiß es bis heute. 1833 wurde er ermordet. Sein Mörder wurde nie gefunden.
+        </p>
+        <p>
+          Kaspar ist nicht nur ein Audioguide — er ist dein Gesprächspartner. Jemand, der dir antwortet, dich befragt, und manchmal nicht sagt, was er weiß. Weil er sich selbst nicht kennt.
+        </p>
+        <button class="btn btn-gold" onclick="openCharacterModal('kaspar')">Kaspar kennenlernen</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHARACTER DETAIL MODAL -->
+<div id="character-modal">
+  <div class="character-modal-box">
+    <button class="character-modal-close" onclick="closeCharacterModal()">✕</button>
+    <div id="character-modal-content"></div>
+  </div>
+</div>
+
+<!-- TEST-RUNDGANG SECTION -->
+<section class="testrun-section" id="testrun">
+  <div class="container testrun-content">
+    <h2 class="testrun-headline">🎭 Kaspar Hauser — Ein Experiment</h2>
+    <p class="testrun-date">25. Mai 2026 · 198 Jahre nach seinem Erscheinen</p>
+
+    <div class="testrun-grid">
+      <div class="testrun-main">
+        <h3>Du wirst Teil eines historischen Moments</h3>
+        <p>
+          Am 26. Mai 1828 tauchte Kaspar Hauser auf dem Unschlittplatz auf. Genau <strong>198 Jahre später</strong>, am 25. Mai 2026, werden wir seinen Weg nachgehen — gemeinsam mit einer KI-gesteuerten Version von ihm, die Fragen beantwortet, die Wahrheit umdreht und immer flüstert.
+        </p>
+
+        <div class="testrun-highlight">
+          <h4>🎪 Was erwartet dich?</h4>
+          <p>✅ <strong>KI-generierte Videos</strong> von Kaspar Hauser an 4 historischen Orten</p>
+          <p>✅ <strong>Eine KI-Stimme</strong> (ElevenLabs), die dich durch den Stadtrundgang führt</p>
+          <p>✅ <strong>Live-Chatbot</strong> — du stellst Fragen, Kaspar antwortet (vom Team vorgelesen)</p>
+          <p>✅ <strong>Wir beobachten</strong> — was funktioniert? Was nicht? Dein Feedback formt die Zukunft.</p>
+        </div>
+
+        <p>
+          Das ist nicht die fertige App. Das ist ein <strong>Experiment, ein Testlauf, ein Moment der Zusammenarbeit</strong>. Wir bauen das zusammen mit dir.
+        </p>
+
+        <div class="testrun-cta">
+          <button class="btn" onclick="openSignupModal()">📍 Jetzt anmelden</button>
+          <button class="btn btn-secondary" onclick="document.getElementById('testrun-faq').scrollIntoView({behavior:'smooth'})">❓ FAQ lesen</button>
+        </div>
+
+        <div class="testrun-counter">
+          <div class="label">Plätze verfügbar</div>
+          <div class="number">15–20<span style="font-size:1rem; margin-left:0.5rem;">Personen</span></div>
+        </div>
+      </div>
+
+      <div class="testrun-side">
+        <h4>📅 Event-Details</h4>
+        <div class="testrun-side-item">
+          <strong>Datum</strong>
+          <p>Montag, 25. Mai 2026</p>
+        </div>
+        <div class="testrun-side-item">
+          <strong>Zeit</strong>
+          <p>21:00 — 22:00 Uhr (60 Min)</p>
+        </div>
+        <div class="testrun-side-item">
+          <strong>Ort</strong>
+          <p>Nürnberg Altstadt (4–5 Stationen)</p>
+        </div>
+        <div class="testrun-side-item">
+          <strong>Gruppengröße</strong>
+          <p>15–20 Personen max</p>
+        </div>
+        <div class="testrun-side-item">
+          <strong>Kosten</strong>
+          <p>Spendenbasis — gib, was dir fair erscheint 🙏</p>
+        </div>
+        <div class="testrun-side-item">
+          <strong>Niveau</strong>
+          <p>Für alle geeignet, keine Vorkenntnisse nötig</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEST-RUNDGANG FAQ -->
+    <div id="testrun-faq" style="margin-top:4rem; padding-top:2rem; border-top:2px solid rgba(255,255,255,0.2);">
+      <h3 style="margin-bottom:2rem; text-align:center;">Häufig gestellte Fragen</h3>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem; max-width:900px; margin:0 auto;">
+        <div>
+          <h4 style="margin-bottom:0.75rem; font-weight:700;">Warum 25. Mai?</h4>
+          <p>Kaspar Hauser tauchte am 26. Mai <strong>1828</strong> auf. Genau 198 Jahre später gedenken wir diesem Moment — und versuchen, seine Geschichte durch KI lebendig zu machen.</p>
+        </div>
+        <div>
+          <h4 style="margin-bottom:0.75rem; font-weight:700;">Ist das die App?</h4>
+          <p>Nein! Die vollständige App kommt im Q3 2026. Das ist ein <strong>Experiment, um zu lernen</strong> — dein Feedback formt, wie die App aussehen wird.</p>
+        </div>
+        <div>
+          <h4 style="margin-bottom:0.75rem; font-weight:700;">Wer kann teilnehmen?</h4>
+          <p>Jeder! Geschichte-Interessierte, Tech-Enthusiasten, Nürnberg-Fans, oder einfach Neugierige. Keine Vorkenntnisse nötig.</p>
+        </div>
+        <div>
+          <h4 style="margin-bottom:0.75rem; font-weight:700;">Kostet das etwas?</h4>
+          <p>Spendenbasis — unterstütze, wenn dir das Projekt gefällt 🙏 Keine Zwangsbeiträge, keine versteckten Kosten.</p>
+        </div>
+        <div>
+          <h4 style="margin-bottom:0.75rem; font-weight:700;">Was brauche ich?</h4>
+          <p>Nur dein Handy (optional GPS), gutes Wetter hoffen 😄, und die Bereitschaft, etwas Neues auszuprobieren.</p>
+        </div>
+        <div>
+          <h4 style="margin-bottom:0.75rem; font-weight:700;">Kann ich Feedback geben?</h4>
+          <p>Ja! Das ist der ganze Sinn. Wir sammeln dein Feedback mit QR-Code oder direktem Gespräch danach.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SIGNUP MODAL -->
+<div id="signup-modal">
+  <div class="signup-box">
+    <button class="signup-close" onclick="closeSignupModal()">✕</button>
+    <h2>Anmeldung zum Test-Rundgang</h2>
+    <p class="signup-box-sub">25. Mai 2026, 21:00–22:00 | Nürnberg Altstadt</p>
+    <form class="signup-form" id="signup-form">
+      <input type="text" id="signup-name" placeholder="Dein Name" required>
+      <input type="email" id="signup-email" placeholder="Deine E-Mail" required>
+      <input type="tel" id="signup-phone" placeholder="Deine Telefonnummer (optional)">
+      <textarea id="signup-message" placeholder="Warum möchtest du teilnehmen? (optional)"></textarea>
+      <div class="signup-form-buttons">
+        <button type="submit" class="btn-submit">✅ Anmelden</button>
+        <button type="button" class="btn-cancel" onclick="closeSignupModal()">Abbrechen</button>
+      </div>
+    </form>
+  </div>
+</div>
 
 <!-- LEADERBOARD -->
 <section class="lb-section" id="leaderboard">
@@ -1759,6 +2163,143 @@ window.addEventListener('keydown', (e) => {
     e.preventDefault();
     window.unlockCheat();
   }
+});
+
+// ===== CHARACTER MODAL =====
+const CHARACTER_DATA = {
+  ritter: {
+    name: 'Der Ritter',
+    avatar: '⚔️',
+    role: 'Anführer · Entscheidungsträger',
+    quote: '"Ich entscheide. Ich trage die Konsequenz."',
+    bio: 'Der Ritter ist der strategische Kopf der Gruppe. Er hat das Privilegium, die Route zu wählen und die Richtung vorzugeben. Doch jede falsche Wahl trägt das Gewicht der gesamten Gruppe.',
+    abilities: [
+      { title: 'Route-Wahl', desc: 'Wähle aus 3 möglichen nächsten Stationen für die Gruppe.' },
+      { title: 'Sicht-Vorteil', desc: 'Sehe auf der Karte, wo die Rätsel-Hinweise versteckt sind.' },
+      { title: 'Bonuspunkte', desc: '+3 Taler für richtige Wahl, -2 für falsche.' }
+    ],
+    details: 'Der Ritter trägt die Last der Führung. Seine Entscheidungen beeinflussen nicht nur seinen eigenen Erfolg, sondern den der gesamten Gruppe. Es ist eine Rolle für Selbstbewusste — oder für jene, die ihre Ängste überwinden wollen.'
+  },
+  hexe: {
+    name: 'Die Hexe',
+    avatar: '🔮',
+    role: 'Wahrsagerin · Wissende',
+    quote: '"Ich kenne den Preis. Und ich zahle ihn."',
+    bio: 'Die Hexe hat Zugang zu Geheimnissen, die anderen verborgen bleiben. Sie kann Kaspar direkt befragen und erhält exklusive Audio-Fragmente. Doch diese Macht hat ihren Preis — sie trägt auch das Wissen um die Dunkelheit.',
+    abilities: [
+      { title: 'Kaspar-Befragung', desc: '4x während des Spiels kannst du Kaspar direkt eine Frage stellen.' },
+      { title: 'Audio-Fragmente', desc: 'Nur du hörst exklusive Botschaften an jedem Ort.' },
+      { title: 'Pausen-Kontrolle', desc: 'Du kannst Pausen initiieren, wenn die Gruppe zu schnell handelt.' }
+    ],
+    details: 'Die Hexe ist die Verbindung zu Kaspar — seine vertraute. Sie trägt die Last des Wissens, das die anderen nicht verstehen. Eine Rolle für Intuitive, für jene, die bereit sind, die dunkleren Wahrheiten zu tragen.'
+  },
+  narr: {
+    name: 'Der Narr',
+    avatar: '🃏',
+    role: 'Kritiker · Zweifler',
+    quote: '"Alle liegen falsch. Das ist mein Moment."',
+    bio: 'Der Narr ist der Gegenpol. Er darf alles in Frage stellen, jede These des Ritters hinterfragen, jede sichere Annahme anzweifeln. Seine Punkte gehören der Gruppe — sein Nutzen liegt in der Wahrheit.',
+    abilities: [
+      { title: 'Widerspruch', desc: 'Du darfst offen gegen die Meinung des Ritters argumentieren.' },
+      { title: 'Gemeinschafts-Fokus', desc: '50% deiner Punkte gehen an die Gruppe — immer.' },
+      { title: 'Bonuspunkte für Wahrheit', desc: '+5 Taler, wenn du der Einzige bist, der recht hat.' }
+    ],
+    details: 'Der Narr ist die Stimme des Zweifels in einer Gruppe, die sich einig ist. Eine schwierige, aber unglaublich wichtige Rolle. Es ist eine Rolle für die Mutigen — für jene, die bereit sind, allein zu stehen und den Status quo zu hinterfragen.'
+  },
+  kaspar: {
+    name: 'Kaspar Hauser — Der Rätselbringer',
+    avatar: '👻',
+    role: 'KI-Guide · Das lebendige Geheimnis',
+    quote: '"Ich war verloren. Nun führe ich euch."',
+    bio: 'Kaspar Hauser ist nicht spielbar — er ist dein Gesprächspartner, dein Guide und dein Gegenpol. Ein KI-generierter historischer Charakter, der auf deine Fragen antwortet, deine Entscheidungen kommentiert und die Stimmung der Welt um ihn herum verändert.',
+    abilities: [
+      { title: 'Dynamisches Feedback', desc: 'Kaspar reagiert auf deine Entscheidungen — wird hoffnungsvoller, nüchterner oder verstörter.' },
+      { title: 'Geheimnisvolle Hinweise', desc: 'Er gibt dir Rätsel, die genau zu den Orten passen, die du besuchst.' },
+      { title: 'Die Frage nach Identität', desc: 'Kaspar kennt sein eigenes Geheimnis nicht — bis zum Ende.' }
+    ],
+    details: 'Kaspar Hauser war ein historisches Rätsel — ein junger Mann, der 1828 auf dem Unschlittplatz in Nürnberg auftauchte ohne Gedächtnis, ohne Namen, ohne Vergangenheit. 1833 wurde er ermordet. Sein Mörder wurde nie gefunden. Im Kaspar Hauser Quest wird er dein Guide, dein Freund und dein größtes Geheimnis. Gemeinsam mit den drei Rollen werden Sie die Wahrheit hinter dem größten Rätsel Deutschlands aufdecken — oder zumindest verstehen, warum es unlösbar ist.'
+  }
+};
+
+function openCharacterModal(character) {
+  const data = CHARACTER_DATA[character];
+  if (!data) return;
+
+  let html = `
+    <div class="character-modal-header">
+      <div class="character-modal-avatar">${data.avatar}</div>
+      <div class="character-modal-info">
+        <h2>${data.name}</h2>
+        <p class="character-modal-role">${data.role}</p>
+        <p class="character-modal-quote">${data.quote}</p>
+      </div>
+    </div>
+
+    <div class="character-modal-section">
+      <h3>Wer ist ${data.name.includes('Kaspar') ? 'er' : 'sie'}?</h3>
+      <p>${data.bio}</p>
+      <p>${data.details}</p>
+    </div>
+  `;
+
+  if (data.abilities) {
+    html += `<div class="character-modal-section">
+      <h3>Fähigkeiten & Verantwortung</h3>
+      <div class="character-modal-abilities">`;
+    data.abilities.forEach(ab => {
+      html += `<div class="character-modal-ability">
+        <strong>⚡ ${ab.title}</strong>
+        <div class="character-modal-ability-desc">${ab.desc}</div>
+      </div>`;
+    });
+    html += `</div></div>`;
+  }
+
+  document.getElementById('character-modal-content').innerHTML = html;
+  document.getElementById('character-modal').style.display = 'flex';
+}
+
+function closeCharacterModal() {
+  document.getElementById('character-modal').style.display = 'none';
+}
+
+document.getElementById('character-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeCharacterModal();
+});
+
+// ===== SIGNUP MODAL =====
+function openSignupModal() {
+  document.getElementById('signup-modal').style.display = 'flex';
+}
+
+function closeSignupModal() {
+  document.getElementById('signup-modal').style.display = 'none';
+}
+
+document.getElementById('signup-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeSignupModal();
+});
+
+document.getElementById('signup-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const name = document.getElementById('signup-name').value;
+  const email = document.getElementById('signup-email').value;
+  const phone = document.getElementById('signup-phone').value;
+  const message = document.getElementById('signup-message').value;
+
+  if (!name || !email) {
+    alert('Bitte Name und E-Mail ausfüllen!');
+    return;
+  }
+
+  // Hier könnte man zum Backend senden, für jetzt nur lokales Feedback
+  const confirmMsg = `Danke, ${name}!\n\nWir haben deine Anmeldung erhalten:\n📧 ${email}\n${phone ? '📱 ' + phone + '\n' : ''}Wir melden uns bis zum 20. Mai mit Details.`;
+
+  setTimeout(() => {
+    alert(confirmMsg);
+    document.getElementById('signup-form').reset();
+    closeSignupModal();
+  }, 300);
 });
 </script>
 
