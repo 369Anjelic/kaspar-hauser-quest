@@ -12,10 +12,7 @@
 *.pem
 *.cert
 
-# Backend (contains API configurations)
-server.js
-api/
-/api/
+# Backend (contains API configurations) - NOW COMMITTING (no hardcoded secrets)
 
 # User Data (3-Wort-Authentifizierung + Chat-History)
 user_data/
