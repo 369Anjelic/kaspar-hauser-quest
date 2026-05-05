@@ -54,3 +54,5 @@ yarn-debug.log*
 
 # Local development
 .LOCAL
+
+.vercel
