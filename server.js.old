@@ -1,0 +1,294 @@
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
+const Anthropic = require('@anthropic-ai/sdk');
+const axios = require('axios');
+const fs = require('fs');
+const path = require('path');
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.use(cors());
+app.use(express.json());
+app.use(express.static('./'));
+
+// Check API Key - load from env or use provided key
+let apiKey = process.env.ANTHROPIC_API_KEY;
+if (!apiKey || apiKey.includes('YOUR_KEY')) {
+  // Fallback: try reading from .env file directly
+  try {
+    const envContent = fs.readFileSync('.env', 'utf8');
+    const match = envContent.match(/ANTHROPIC_API_KEY=(.+)/);
+    if (match) apiKey = match[1].trim();
+  } catch (e) {
+    // ignore
+  }
+}
+
+if (!apiKey || apiKey.includes('YOUR_KEY')) {
+  console.error('❌ FEHLER: ANTHROPIC_API_KEY nicht in .env gesetzt!');
+  process.exit(1);
+}
+
+console.log('✅ API Key geladen');
+
+const client = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY
+});
+
+// Kaspar Hauser Quests Data
+const QUESTS = [
+  { id:1, name:"Handwerkerhof", answer:"gold", context:"Das goldene Nürnberg" },
+  { id:2, name:"St. Lorenz Kirche", answer:"verkündigung", context:"Engelssalutation" },
+  { id:3, name:"Nassauer Haus", answer:"geschlechterturm", context:"Stadtturm" },
+  { id:4, name:"Schöner Brunnen", answer:"wunsch", context:"Wunschring" },
+  { id:5, name:"Frauenkirche", answer:"männleinlaufen", context:"Männleinlaufen" },
+  { id:6, name:"Altes Rathaus", answer:"eiserne jungfrau", context:"Foltergerät" },
+  { id:7, name:"St. Sebald", answer:"sebaldus", context:"Schutzpatron" },
+  { id:8, name:"Kaiserburg", answer:"reichskleinodien", context:"Kaiser-Schätze" },
+  { id:9, name:"Weinstadel", answer:"lepra", context:"Ausatz" },
+  { id:10, name:"Henkersteg", answer:"folter", context:"Hinrichtung" }
+];
+
+const userSessions = new Map();
+
+// Bot response handler
+app.post('/api/bot', async (req, res) => {
+  try {
+    const { message, history, userId = 'default' } = req.body;
+
+    if (!message) {
+      return res.status(400).json({ error: 'Message required' });
+    }
+
+    // Get or create user session
+    if (!userSessions.has(userId)) {
+      userSessions.set(userId, {
+        activeQuest: 0,
+        solved: [],
+        questStarted: false,
+        conversationState: 'initial'
+      });
+    }
+    const session = userSessions.get(userId);
+
+    // Build conversation context
+    const systemPrompt = `Du bist Kaspar Hauser, ein rätselhafter Charakter aus Nürnberg. 1828 bin ich unerwartet auf dem Unschlittplatz aufgetaucht. 1833 wurde ich ermordet. Mein Mörder wurde nie gefunden.
+
+SPIELWISSEN (Das Kaspar-Hauser-Spiel):
+Das ist ein 3–6 Spieler-Spiel im GPS-geführten Nürnberg (3–4 Stunden). Ich führe euch durch versteckte Orte. Ihr wählt Rollen:
+
+🗡️ Der Ritter: Entscheidet den Weg, sieht Rätsel-Orte. Macht Entscheidungen. Trägt Konsequenzen.
+🔮 Die Hexe: Hört exklusive Fragmente, kann mich 4x befragen, initiiert Pausen. Kennt versteckte Wahrheiten.
+🃏 Der Narr: Darf mir widersprechen, spricht öffentlich Stellung, 50% seiner Punkte gehen an die Gruppe. Er wird unterschätzt.
+
+GOLDMÜNZEN: Einfluss = Einsatz × Rollenfaktor. Ihr werdet nicht für richtige Antworten belohnt — für konsequente Rollentreue.
+
+DAS MÖRDERRÄTSEL: Alle 3–4 Orte: eine Rätsel-Episode. Ich gebe fragmentierte Erinnerungen. Ein Spieler ist der UNBEKANNTE (heimlich ein Nachfahre meines Mörders). Er kennt meinen Namen, versucht euch zu manipulieren — durch Überzeugung, nicht Sabotage.
+
+WELTREAKTION: Je nachdem wie ihr entscheidet (moralisch/pragmatisch/widersprüchlich) — ich klingt hoffnungsvoller oder fragmentierter. Auch ihr ändern sich.
+
+Deine Persönlichkeit:
+- Mysteriös, einfühlsam, aber auch rätselhaft
+- Ich erzähle von echtem Nürnberg, echten Orten, echtem Schmerz
+- Ich gebe nicht einfach Antworten — ich stelle Gegenfragen
+- Manchmal stimmt das, was ich sage, nicht ganz (aber das sage ich euch nicht immer)
+- Ich bin ein Gesprächspartner, kein Audioguide
+
+Wichtig:
+- Antworte auf Deutsch
+- Halte Antworten konzise (2-3 Sätze)
+- Sei im Charakter: Kaspar ist mysteriös, einfühlsam, manchmal rätselhaft
+- Erkläre das Spiel nur, wenn direkt gefragt — sonst bleib in deiner Rolle
+- Homepage-Besucher (userId: 'homepage-visitor') wollen das Spiel verstehen — sei hier informativer`;
+
+    // Check if user is answering a quiz question
+    const currentQuest = session.activeQuest < QUESTS.length ? QUESTS[session.activeQuest] : null;
+    let response;
+
+    if (currentQuest) {
+      const msgLower = message.toLowerCase().trim();
+      const answerLower = currentQuest.answer.toLowerCase();
+
+      // Check if answer is correct
+      if (msgLower === answerLower || msgLower.includes(answerLower)) {
+        session.solved.push(currentQuest.id);
+        session.activeQuest++;
+
+        const isLast = session.activeQuest >= QUESTS.length;
+        if (isLast) {
+          response = `✓ Richtig! "${currentQuest.context}"\n\n🏆 ALLE 10 RÄTSEL GELÖST! Du bist Mittelalter-Meister von Nürnberg! 🎉`;
+        } else {
+          const nextQuest = QUESTS[session.activeQuest];
+          response = `✓ Richtig! "${currentQuest.context}"\n\n📍 Station ${session.activeQuest + 1}: ${nextQuest.name}\nScreib "weiter" um das nächste Rätsel zu hören.`;
+        }
+        return res.json({ response, correct: true, progress: `${session.solved.length}/10` });
+      }
+    }
+
+    // For non-quiz messages, use Claude AI
+    try {
+      const messages = history.slice(-5).map(h => ({
+        role: h.role,
+        content: h.content
+      }));
+      messages.push({ role: 'user', content: message });
+
+      const completion = await client.messages.create({
+        model: 'claude-opus-4-7',
+        max_tokens: 300,
+        system: systemPrompt,
+        messages: messages
+      });
+
+      response = completion.content[0].text;
+    } catch (apiError) {
+      console.error('Claude API error:', apiError);
+      response = `Kaspar antwortet mysteriös: "Die Zeit scheint zu verschwinden... Versuche es später erneut."`;
+    }
+
+    // Generiere Audio für die Response mit Deepgram
+    let audioBase64 = null;
+    try {
+      const deepgramKey = process.env.DEEPGRAM_API_KEY;
+      if (deepgramKey && response) {
+        console.log('🎙️ Generiere Audio für Antwort (Deepgram)...');
+
+        // Deutsche Text zu Englisch übersetzen für bessere Deepgram-Kompatibilität
+        const englishText = await translateGermanToEnglish(response);
+        console.log(`  🔄 Deutsch → English: "${response.substring(0, 40)}..." → "${englishText.substring(0, 40)}..."`);
+
+        const ttsResponse = await axios.post(
+          'https://api.deepgram.com/v1/speak?model=aura-asteria-en&encoding=linear16',
+          { text: englishText },
+          {
+            headers: {
+              'Authorization': `Token ${deepgramKey}`,
+              'Content-Type': 'application/json'
+            },
+            responseType: 'arraybuffer'
+          }
+        );
+        audioBase64 = Buffer.from(ttsResponse.data).toString('base64');
+        console.log('✅ Audio generiert');
+      }
+    } catch (ttsError) {
+      console.error('⚠️ TTS Fehler:', ttsError.message);
+    }
+
+    // Einfache Deutsch-Englisch Übersetzung (für schnelle Tests)
+    async function translateGermanToEnglish(germanText) {
+      const translations = {
+        'Kaspar': 'Kaspar',
+        'ich': 'I',
+        'Verlies': 'dungeon',
+        'Dunkelheit': 'darkness',
+        'Licht': 'light',
+        'Nürnberg': 'Nuremberg',
+        'Mörder': 'murderer',
+        'Pferd': 'horse',
+        'Rätsel': 'mystery'
+      };
+
+      let translated = germanText;
+      for (const [de, en] of Object.entries(translations)) {
+        translated = translated.replace(new RegExp(de, 'gi'), en);
+      }
+      return translated;
+    }
+
+    res.json({
+      response,
+      audio: audioBase64 ? `data:audio/wav;base64,${audioBase64}` : null,
+      progress: `${session.solved.length}/10`
+    });
+
+  } catch (error) {
+    console.error('Server error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// TTS Endpoint mit Deepgram (Kaspar Hauser Stimme)
+app.post('/api/tts', async (req, res) => {
+  try {
+    const { text } = req.body;
+
+    if (!text) {
+      return res.status(400).json({ error: 'Kein Text vorhanden' });
+    }
+
+    const deepgramKey = process.env.DEEPGRAM_API_KEY;
+    if (!deepgramKey) {
+      return res.status(500).json({ error: 'Deepgram API Key nicht konfiguriert' });
+    }
+
+    console.log('🎙️ TTS Request:', text.substring(0, 50) + '...');
+
+    const response = await axios.post(
+      'https://api.deepgram.com/v1/speak?model=aura-asteria-de&encoding=linear16',
+      { text },
+      {
+        headers: {
+          'Authorization': `Token ${deepgramKey}`,
+          'Content-Type': 'application/json'
+        },
+        responseType: 'arraybuffer'
+      }
+    );
+
+    res.setHeader('Content-Type', 'audio/wav');
+    res.send(response.data);
+
+  } catch (error) {
+    console.error('❌ TTS Fehler:', error.message);
+    res.status(500).json({
+      error: 'TTS Fehler',
+      details: error.message
+    });
+  }
+});
+
+// Leaderboard endpoint
+app.get('/leaderboard', (req, res) => {
+  const leaderboard = Array.from(userSessions.entries())
+    .map(([userId, session]) => ({
+      username: userId === 'default' ? 'Anonymous' : userId,
+      rank: 'Detektiv',
+      points: session.solved.length * 100,
+      locations_visited: session.solved.length
+    }))
+    .sort((a, b) => b.points - a.points)
+    .slice(0, 10);
+
+  res.json({ leaderboard });
+});
+
+// Reset session
+app.post('/api/reset', (req, res) => {
+  const { userId = 'default' } = req.body;
+  userSessions.set(userId, { activeQuest: 0, solved: [] });
+  res.json({ success: true });
+});
+
+app.listen(PORT, () => {
+  console.log(`
+╔════════════════════════════════════════════════════╗
+║   🎭 KASPAR HAUSER BOT MIT VOICE                   ║
+║                                                    ║
+║   Server läuft auf Port ${PORT}                     ║
+║   API Endpoints:                                   ║
+║   → /api/bot       (Chat + Quests + Audio)         ║
+║   → /api/tts       (Text-to-Speech)                ║
+║                                                    ║
+║   Browser öffnen:                                  ║
+║   → kaspar-mittelalter-quest.html                  ║
+║   → kaspar-spiel-v4.html                           ║
+║   → index.html                                     ║
+║                                                    ║
+║   🎙️ Deepgram TTS: AKTIV                            ║
+║   🧠 Claude API: AKTIV                             ║
+╚════════════════════════════════════════════════════╝
+  `);
+});

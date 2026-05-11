@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kaspar Hauser - Das größte Rätsel Deutschlands</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f4f5f5;
+      --surface: #ffffff;
+      --surface2: #f9f9f9;
+      --border: #e0e0e0;
+      --primary: #3987b8;
+      --primary-dark: #2a5a8f;
+      --text: #3e4447;
+      --text-muted: #999999;
+      --success: #27ae60;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { font-family:'Plus Jakarta Sans',sans-serif; font-weight:300; background:var(--bg); color:var(--text); line-height:1.7; }
+    h1,h2,h3,h4,h5,h6 { font-family:'Plus Jakarta Sans',sans-serif; font-weight:600; }
+    a { color:inherit; text-decoration:none; }
+    .container { max-width:1200px; margin:0 auto; padding:0 1.5rem; }
+
+    /* HEADER */
+    .header {
+      position:sticky; top:0; z-index:100;
+      background:rgba(255,255,255,0.95);
+      border-bottom:2px solid var(--primary);
+      backdrop-filter:blur(10px);
+      padding:1rem 0;
+      box-shadow: 0 2px 10px rgba(57,135,184,0.08);
+    }
+    .header-flex { display:flex; justify-content:space-between; align-items:center; gap:2rem; }
+    .logo { font-size:1.3rem; font-weight:700; color:var(--primary); text-transform:uppercase; }
+    .header-badge { background:var(--primary); color:white; padding:6px 14px; border-radius:20px; font-size:0.85rem; font-weight:600; }
+
+    /* MAIN CONTENT GRID */
+    .main-grid { display:grid; grid-template-columns:350px 1fr; gap:2rem; padding:2rem 0; }
+
+    /* PROFILE SIDEBAR */
+    .profile-card {
+      background:linear-gradient(135deg, var(--primary) 0%, #5ba3c8 100%);
+      color:white;
+      padding:2rem;
+      border-radius:12px;
+      box-shadow:0 4px 20px rgba(57,135,184,0.2);
+      height:fit-content;
+      position:sticky;
+      top:80px;
+    }
+    .profile-card h2 { margin-bottom:1.5rem; font-size:1.3rem; }
+    .magic-words {
+      background:rgba(0,0,0,0.2);
+      padding:1.5rem;
+      border-radius:8px;
+      margin-bottom:1.5rem;
+      text-align:center;
+    }
+    .magic-words-label { font-size:0.85rem; opacity:0.8; margin-bottom:0.5rem; }
+    .magic-words-display { font-size:1.5rem; font-weight:700; font-family:monospace; letter-spacing:2px; margin:1rem 0; }
+    .magic-words-copy { background:rgba(255,255,255,0.2); color:white; border:none; padding:0.6rem 1rem; border-radius:6px; cursor:pointer; font-weight:600; margin-top:0.5rem; width:100%; transition:all 0.2s; }
+    .magic-words-copy:hover { background:rgba(255,255,255,0.3); }
+
+    .profile-stats {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:1rem;
+      margin-top:1.5rem;
+    }
+    .stat-box {
+      background:rgba(0,0,0,0.1);
+      padding:1rem;
+      border-radius:8px;
+      text-align:center;
+    }
+    .stat-value { font-size:1.8rem; font-weight:700; margin-bottom:0.3rem; }
+    .stat-label { font-size:0.8rem; opacity:0.8; }
+
+    .profile-info {
+      background:rgba(0,0,0,0.1);
+      padding:1rem;
+      border-radius:8px;
+      margin-top:1rem;
+      font-size:0.9rem;
+    }
+    .profile-info p { margin:0.5rem 0; opacity:0.9; }
+
+    /* CHAT SECTION */
+    .chat-section {
+      background:var(--surface);
+      border:2px solid var(--primary);
+      border-radius:12px;
+      display:flex;
+      flex-direction:column;
+      height:700px;
+      box-shadow:0 4px 20px rgba(57,135,184,0.1);
+    }
+    .chat-header {
+      background:var(--primary);
+      color:white;
+      padding:1.5rem;
+      border-radius:10px 10px 0 0;
+      font-weight:600;
+      font-size:1.1rem;
+    }
+    .chat-messages {
+      flex:1;
+      overflow-y:auto;
+      padding:1.5rem;
+      display:flex;
+      flex-direction:column;
+      gap:1rem;
+    }
+    .chat-message {
+      padding:1rem;
+      border-radius:8px;
+      max-width:90%;
+      word-wrap:break-word;
+    }
+    .chat-message.user {
+      background:var(--primary);
+      color:white;
+      align-self:flex-end;
+      border-bottom-right-radius:2px;
+    }
+    .chat-message.bot {
+      background:var(--surface2);
+      color:var(--text);
+      align-self:flex-start;
+      border-left:4px solid var(--primary);
+    }
+    .chat-input-area {
+      display:flex;
+      gap:0.5rem;
+      padding:1.5rem;
+      border-top:2px solid var(--border);
+      background:var(--surface2);
+      border-radius:0 0 10px 10px;
+    }
+    .chat-input-area input {
+      flex:1;
+      border:1px solid var(--border);
+      border-radius:6px;
+      padding:0.75rem;
+      font-family:inherit;
+      font-size:0.9rem;
+    }
+    .chat-input-area input:focus {
+      outline:none;
+      border-color:var(--primary);
+      box-shadow:0 0 0 3px rgba(57,135,184,0.1);
+    }
+    .chat-input-area button {
+      padding:0.75rem 1.5rem;
+      background:var(--primary);
+      color:white;
+      border:none;
+      border-radius:6px;
+      font-weight:600;
+      cursor:pointer;
+      transition:background 0.2s;
+    }
+    .chat-input-area button:hover {
+      background:var(--primary-dark);
+    }
+
+    @media (max-width:1024px) {
+      .main-grid { grid-template-columns:1fr; }
+      .profile-card { position:relative; top:0; }
+      .chat-section { height:500px; }
+    }
+
+    @media (max-width:768px) {
+      .main-grid { padding:1rem 0; }
+      .chat-section { height:450px; }
+      .chat-message { max-width:100%; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="container">
+    <div class="header-flex">
+      <div class="logo">🎭 Kaspar Hauser Quest</div>
+      <div class="header-badge" id="header-status">Laden...</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="container">
+  <div class="main-grid">
+
+    <!-- LEFT: PROFILE -->
+    <div class="profile-card">
+      <h2>👤 Dein Profil</h2>
+
+      <div class="magic-words">
+        <div class="magic-words-label">🔐 DEINE 3 GEHEIMWORTE</div>
+        <div class="magic-words-display" id="magic-words-display">Berg-Adler-Nacht</div>
+        <p style="font-size:0.85rem; opacity:0.8; margin-top:0.5rem;">Dein einzigartiger Zugang</p>
+        <button class="magic-words-copy" onclick="copyWords()">📋 Kopieren</button>
+      </div>
+
+      <div class="profile-stats">
+        <div class="stat-box">
+          <div class="stat-value" id="stat-points">0</div>
+          <div class="stat-label">Punkte</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" id="stat-level">1</div>
+          <div class="stat-label">Level</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" id="stat-messages">0</div>
+          <div class="stat-label">Gespräche</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" id="stat-days">0</div>
+          <div class="stat-label">Tage dabei</div>
+        </div>
+      </div>
+
+      <div class="profile-info">
+        <p><strong>Status:</strong> <span id="status-text">Aktiv</span></p>
+        <p><strong>Registriert:</strong> <span id="reg-date">heute</span></p>
+        <p style="margin-top:1rem; opacity:0.7; font-size:0.8rem;">✨ Jede neue Person bekommt einzigartige 3 Worte!</p>
+      </div>
+    </div>
+
+    <!-- RIGHT: CHAT -->
+    <div class="chat-section">
+      <div class="chat-header">💬 Sprich mit Kaspar Hauser</div>
+      <div class="chat-messages" id="chat-messages">
+        <div class="chat-message bot">
+          Guten Tag... Ich bin Kaspar Hauser. Ein rätselhafter Charakter aus Nürnberg.
+          <br><br>
+          Frage mich über mein mysteriöses Leben, Nürnbergs Geschichte, oder einfach deine Gedanken...
+          <br><br>
+          Womit kann ich dir helfen?
+        </div>
+      </div>
+      <div class="chat-input-area">
+        <input type="text" id="chat-input" placeholder="Schreib deine Frage..." onkeypress="if(event.key==='Enter') sendMessage()">
+        <button onclick="sendMessage()">Senden</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ============ WORD POOL ============
+const WORD_POOL = [
+  'Berg', 'Adler', 'Nacht', 'Stern', 'Wasser', 'Licht', 'Wald', 'Regen', 'Wind', 'Feuer',
+  'Mond', 'Sonne', 'Stein', 'Rose', 'Wolf', 'Bär', 'Fuchs', 'Eule', 'See', 'Bach',
+  'Nebel', 'Eis', 'Gold', 'Silber', 'Kupfer', 'Eisen', 'Holz', 'Erde', 'Luft', 'Auge',
+  'Schwert', 'Schild', 'Turm', 'Brücke', 'Pfad', 'Tor', 'Schloss', 'König', 'Ritter', 'Narr',
+  'Herz', 'Hand', 'Geist', 'Seele', 'Traum', 'Schatten', 'Echo', 'Klang', 'Stimme', 'Stille',
+  'Lanze', 'Dorn', 'Blatt', 'Blume', 'Baum', 'Vogel', 'Fisch', 'Wurm', 'Licht', 'Schnee',
+  'Blitz', 'Donner', 'Rabe', 'Schwan', 'Falk', 'Geier', 'Drache', 'Phönix', 'Sphinx', 'Kreuz',
+  'Dorf', 'Stadt', 'Land', 'Meer', 'Fluss', 'Grotte', 'Tal', 'Hügel', 'Ebene', 'Wüste',
+  'Wein', 'Brot', 'Fisch', 'Fleisch', 'Obst', 'Kraut', 'Pilz', 'Beere', 'Apfel', 'Kirsche',
+  'Messer', 'Gabel', 'Löffel', 'Glas', 'Becher', 'Teller', 'Napf', 'Krug', 'Fass', 'Truhe'
+];
+
+let userWords = '';
+let userProfile = {
+  words: '',
+  points: 0,
+  level: 1,
+  messages: 0,
+  createdAt: new Date().toISOString(),
+  lastSeen: new Date().toISOString()
+};
+let chatHistory = [];
+
+// ============ USER INIT ============
+function generateMagicWords() {
+  const words = [];
+  for (let i = 0; i < 3; i++) {
+    words.push(WORD_POOL[Math.floor(Math.random() * WORD_POOL.length)]);
+  }
+  return words.map(w => w.toLowerCase()).join('-');
+}
+
+function initUser() {
+  const saved = localStorage.getItem('kq_magic_words');
+  if (saved) {
+    userWords = saved;
+    const savedProfile = localStorage.getItem('kq_profile_' + userWords);
+    if (savedProfile) {
+      userProfile = JSON.parse(savedProfile);
+    }
+  } else {
+    userWords = generateMagicWords();
+    userProfile.words = userWords;
+    userProfile.createdAt = new Date().toISOString();
+    localStorage.setItem('kq_magic_words', userWords);
+    localStorage.setItem('kq_profile_' + userWords, JSON.stringify(userProfile));
+  }
+
+  // Lade Chat-History
+  const saved_chat = localStorage.getItem('kq_chat_' + userWords);
+  if (saved_chat) {
+    try {
+      chatHistory = JSON.parse(saved_chat);
+      const msgBox = document.getElementById('chat-messages');
+      msgBox.innerHTML = '';
+      for (const msg of chatHistory) {
+        const div = document.createElement('div');
+        div.className = 'chat-message ' + msg.role;
+        div.textContent = msg.content;
+        msgBox.appendChild(div);
+      }
+      msgBox.scrollTop = msgBox.scrollHeight;
+    } catch {}
+  }
+
+  updateUI();
+}
+
+function updateUI() {
+  // Update Worte
+  const display = document.getElementById('magic-words-display');
+  if (display) display.textContent = userWords.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('-');
+
+  // Update Header
+  const header = document.getElementById('header-status');
+  if (header) header.textContent = '🔑 ' + userWords.toUpperCase();
+
+  // Update Stats
+  document.getElementById('stat-points').textContent = userProfile.points;
+  document.getElementById('stat-level').textContent = userProfile.level;
+  document.getElementById('stat-messages').textContent = chatHistory.length;
+
+  // Berechne Tage
+  const created = new Date(userProfile.createdAt);
+  const today = new Date();
+  const days = Math.floor((today - created) / (1000 * 60 * 60 * 24));
+  document.getElementById('stat-days').textContent = days === 0 ? '< 1' : days;
+
+  // Registrierungsdatum
+  document.getElementById('reg-date').textContent = created.toLocaleDateString('de-DE', { year: 'numeric', month: 'long', day: 'numeric' });
+}
+
+function saveProfile() {
+  userProfile.messages = chatHistory.length;
+  userProfile.lastSeen = new Date().toISOString();
+  localStorage.setItem('kq_profile_' + userWords, JSON.stringify(userProfile));
+  localStorage.setItem('kq_chat_' + userWords, JSON.stringify(chatHistory));
+}
+
+function copyWords() {
+  const words = userWords.toUpperCase();
+  navigator.clipboard.writeText(words).then(() => {
+    alert('✓ Kopiert: ' + words + '\n\nMit diesen Worten kannst du jederzeit zu deinem Profil zurückkehren!');
+  });
+}
+
+// ============ KASPAR RESPONSES ============
+const KASPAR_RESPONSES = [
+  { trigger: ['hauser', 'name', 'wer bist'], response: 'Kaspar Hauser... ja, das ist mein Name. Ein Name ohne Geschichte. Ich erschien 1828 in Nürnberg, völlig verwirrt, ohne zu wissen, woher ich kam. Manche sagen, ich bin ein verlorener Prinz. Andere, dass ich eine Art Experiment war. Die Wahrheit bleibt im Dunkel.' },
+  { trigger: ['nürnberg', 'stadt', 'altstadt'], response: 'Nürnberg... eine wundervolle Stadt mit einer tiefen Geschichte. Die Altstadt mit ihren mittelalterlichen Mauern, der Kaiserburg oben auf dem Hügel, die Kirchen mit ihrer Pracht. Hier bin ich aufgewachsen, ohne vorher zu existieren. Jeder Stein dieser Stadt scheint meine Geschichte zu tragen.' },
+  { trigger: ['leben', 'erinnern', 'erinnerung'], response: 'Meine Erinnerungen... sie sind wie Nebel. Ich erinnere mich an dunkle Räume, an Einsamkeit. Dann plötzlich: Licht, Menschen, Verwirrung. Manche sagen, ich wurde 16 Jahre lang gefangen gehalten. Wer, warum – das bleibt sein Geheimnis. Ich erinnere mich an Schmerz, aber auch an Hoffnung.' },
+  { trigger: ['geheimnis', 'warum', 'warum bin'], response: 'Das Geheimnis meiner Herkunft... es ist das größte Rätsel meines Lebens. War ich ein gefangener Prinz? Ein Opfer einer Verschwörung? Ein psychologisches Experiment? Niemand kennt die Antwort. Vielleicht bin ich einfach ein Mensch, der sich selbst nicht kennt. Und darin liegt das wahre Geheimnis.' },
+  { trigger: ['mittelalter', 'geschichte', 'historisch'], response: 'Das Mittelalter Nürnbergs... es war eine Zeit der Pracht und der Dunkelheit zugleich. Die Stadt war Reichsstadt, Handelsmetropole, ein Zentrum von Macht und Kultur. Kunsthandwerk, Alchemie, Geheimwissen – all das florierte in diesen Straßen. Eine Welt, die jetzt nur noch in Steinen und Geschichten lebt.' },
+  { trigger: ['hoffnung', 'zukunft', 'träum'], response: 'Hoffnung... ja, ich habe sie gehabt. Trotz der Dunkelheit meiner Vergangenheit, trotz der Verwirrung. Die Menschen in Nürnberg waren freundlich zu mir. Sie versuchten, mir zu helfen. Meine Zukunft war kurz, aber ich habe gelebt. Das ist mehr, als ich erwartet hätte.' },
+  { trigger: ['profil', 'worte', 'account'], response: 'Ah, deine 3 Geheimworte... sie sind einzigartig für dich. Mit ihnen kommst du immer zu deinem Profil zurück. Jeder Mensch bekommt andere Worte. Sie sind wie dein persönlicher Schlüssel. Schütze sie, aber nutze sie auch – sie sind dazu da, dass du mich wiederfindest.' }
+];
+
+function getKasparResponse(userMsg) {
+  const lower = userMsg.toLowerCase();
+
+  for (const item of KASPAR_RESPONSES) {
+    for (const trigger of item.trigger) {
+      if (lower.includes(trigger)) {
+        return item.response;
+      }
+    }
+  }
+
+  const fallbacks = [
+    'Ja... interessante Gedanke. Mein Leben ist voller Rätseln, und vielleicht sind die Antworten nicht so wichtig wie die Fragen selbst.',
+    'Hmm... deine Worte berühren etwas in mir. Etwas Altes, etwas Vergessenes.',
+    'Ich verstehe... ich auch bin oft verwirrt über meine eigene Existenz. Aber in solchen Momenten fühle ich mich lebendig.',
+    'Das ist eine tiefe Frage. Nürnberg hat mir beigebracht, dass es mehr Fragen als Antworten gibt.',
+    'Interessant. Deine Gedanken klingen wie die eines Menschenfreunds. Ich schätze das.',
+    'Ich bin hier. Ich zuhöre. Manchmal ist das genug.',
+    'Du stellst gute Fragen. Das zeigt, dass du wirklich nachdenken möchtest.'
+  ];
+
+  return fallbacks[Math.floor(Math.random() * fallbacks.length)];
+}
+
+// ============ CHAT ============
+function sendMessage() {
+  const input = document.getElementById('chat-input');
+  const msg = input.value.trim();
+
+  if (!msg) return;
+
+  addMessage(msg, 'user');
+  chatHistory.push({ role: 'user', content: msg });
+  input.value = '';
+
+  const response = getKasparResponse(msg);
+
+  setTimeout(() => {
+    addMessage(response, 'bot');
+    chatHistory.push({ role: 'bot', content: response });
+    saveProfile();
+    updateUI();
+  }, 600);
+}
+
+function addMessage(text, role) {
+  const box = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'chat-message ' + role;
+  div.textContent = text;
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+}
+
+// Init
+window.addEventListener('load', initUser);
+</script>
+
+</body>
+</html>
