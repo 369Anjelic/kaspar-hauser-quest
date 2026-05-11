@@ -256,7 +256,7 @@
     .quest-intro-cta button { flex:1; padding:0.75rem; }
 
     /* DEBUG PANEL */
-    #debug-panel { position:fixed; bottom:20px; right:20px; background:#000; color:#00ff00; border:2px solid #00ff00; border-radius:8px; padding:1rem; max-width:350px; font-family:monospace; font-size:0.75rem; z-index:999; max-height:400px; overflow-y:auto; box-shadow:0 0 20px rgba(0,255,0,0.3); }
+    #debug-panel { display:none; }
     #debug-panel.hidden { display:none; }
     .debug-header { font-weight:700; color:#ffff00; margin-bottom:0.5rem; border-bottom:1px solid #00ff00; padding-bottom:0.5rem; }
     .debug-item { margin:0.5rem 0; line-height:1.4; }
@@ -469,6 +469,15 @@
       <button class="lang-btn" data-lang="en" onclick="setLanguage('en')">🇬🇧 EN</button>
       <button class="lang-btn" data-lang="es" onclick="setLanguage('es')">🇪🇸 ES</button>
     </div>
+    <nav class="nav">
+      <a href="#map" data-i18n="nav_map">Karte</a>
+      <a href="#route" data-i18n="nav_route">Route</a>
+      <a href="#story" data-i18n="nav_story">Geschichte</a>
+      <a href="#characters" data-i18n="nav_characters">Rollen</a>
+      <a href="#testrun" data-i18n="nav_testrun">Test 25.5</a>
+      <a href="#leaderboard" data-i18n="nav_lb">Rangliste</a>
+      <a href="#faq" data-i18n="nav_faq">FAQ</a>
+    </nav>
     <div id="user-header">
       <span class="user-badge" id="hdr-name"></span>
       <span class="user-badge" id="hdr-points"></span>
@@ -496,7 +505,60 @@
   </div>
 </section>
 
+<!-- MAP + CHAT -->
+<section class="map-section" id="map">
+  <div class="container">
+    <p class="section-label">Interaktive Karte</p>
+    <h2 class="section-title">Nürnberg — Mittelalterliche Rundroute</h2>
+    <p class="section-sub">Gehe zum Handwerkerhof am Königstor und Kaspar Hauser erscheint. Lokal nicht möglich? Nutze den Demo-Modus.</p>
+    <div class="map-grid">
+      <div id="leaflet-map"></div>
+      <div class="map-panel">
+        <div class="map-status">
+          <div class="status-icon" id="status-icon">🏰</div>
+          <div>
+            <div class="status-title" id="status-title">Zum Handwerkerhof gehen</div>
+            <div class="status-text" id="status-text">Standort aktivieren um zu beginnen</div>
+          </div>
+        </div>
+        <div id="distance-badge" class="distance-badge hidden">
+          Entfernung: <strong id="distance-value">--</strong> m
+        </div>
+        <button class="btn btn-gold" id="enable-location-btn" onclick="enableLocation()" style="margin:0 1.25rem 1.25rem;">📍 Standort aktivieren</button>
 
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin:0 1.25rem 1.25rem;">
+          <button class="btn btn-gold" onclick="openKasparIntro()" style="font-size:0.85rem;">👻 Mit Kaspar sprechen</button>
+          <button class="btn btn-outline" onclick="openQuestIntro()" style="font-size:0.85rem;">🎭 Rätsel spielen</button>
+        </div>
+
+        <!-- CHAT -->
+        <div id="bot-chat-panel" class="chat-panel hidden">
+          <div class="chat-header">
+            <h3>Kaspar Hauser</h3>
+            <p id="chat-location-label">Mittelalterliche Rundroute · Nürnberg</p>
+          </div>
+          <div class="chat-messages" id="chat-messages"></div>
+          <div class="chat-input-row">
+            <input type="text" id="chat-input" placeholder="Schreibe Kaspar...">
+            <button class="btn btn-gold" id="send-btn" onclick="sendMessage()" style="padding:8px 16px;">→</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 STATIONEN ROUTE -->
+<section class="route-section" id="route">
+  <div class="container">
+    <p class="section-label" data-i18n="route_label">Die Rundroute</p>
+    <h2 class="section-title" data-i18n="route_title">10 mittelalterliche Stationen</h2>
+    <p class="section-sub" data-i18n="route_sub">Ein ~4 km langer Rundgang durch die Altstadt Nürnbergs — zu Fuß in 4–5 Stunden erlebbar.</p>
+    <div class="route-grid" id="route-grid">
+      <!-- filled by JS -->
+    </div>
+  </div>
+</section>
 
 <!-- WIE ES FUNKTIONIERT -->
 <section class="steps-section" id="how-it-works">
@@ -544,6 +606,47 @@
   </div>
 </section>
 
+<!-- STORY -->
+<section class="story-section" id="story">
+  <div class="container">
+    <div class="story-grid">
+      <div class="story-text">
+        <p class="section-label">Die Geschichte</p>
+        <h2 class="section-title">Kaspar Hauser im Mittelalter</h2>
+        <p><strong>26. Mai 1828.</strong> Ein junger Mann erscheint auf dem Nürnberger Hauptmarkt. Er kennt die Stadt nicht — doch die Stadt kennt ihn bald.</p>
+        <p>Kaspar Hauser wandert durch die Gassen des mittelalterlichen Nürnbergs. An jedem historischen Ort stellt er dir eine Frage aus dem Dunkel der Geschichte — Rätsel über Ritter, Kaiser und das Leben im Mittelalter.</p>
+        <p><strong>14. Dezember 1833.</strong> Kaspar wird in Ansbach ermordet. Sein Mörder wurde nie gefasst. Sein Geist wandert noch heute durch Nürnbergs alte Mauern.</p>
+        <p style="color:var(--primary);font-weight:600;">→ Löse alle 10 Rätsel und enträtsel die Geschichte.</p>
+      </div>
+      <div>
+        <div class="story-quote">
+          <p>"Ich kannte keine Mauern — und doch war ich gefangen. Nun laufe ich durch eure Stadt und suche Antworten in den Steinen des Mittelalters."</p>
+          <cite>— Kaspar Hauser, Nürnberg 1828</cite>
+        </div>
+        <div style="margin-top:1.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:1.5rem;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;text-align:center;">
+            <div>
+              <div style="font-size:1.8rem;font-weight:700;color:var(--primary);">10</div>
+              <div style="font-size:0.8rem;color:var(--text-muted);">Mittelalter-Stationen</div>
+            </div>
+            <div>
+              <div style="font-size:1.8rem;font-weight:700;color:var(--primary);">~4km</div>
+              <div style="font-size:0.8rem;color:var(--text-muted);">Stadtrundgang</div>
+            </div>
+            <div>
+              <div style="font-size:1.8rem;font-weight:700;color:var(--primary);">1000</div>
+              <div style="font-size:0.8rem;color:var(--text-muted);">Punkte zu gewinnen</div>
+            </div>
+            <div>
+              <div style="font-size:1.8rem;font-weight:700;color:var(--primary);">4–5h</div>
+              <div style="font-size:0.8rem;color:var(--text-muted);">Spielzeit</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- FEATURES -->
 <section class="features-section" id="features">
@@ -585,10 +688,234 @@
   </div>
 </section>
 
+<!-- CHARACTERS -->
+<section class="characters-section" id="characters">
+  <div class="container">
+    <p class="section-label">Die Rollen</p>
+    <h2 class="section-title">Wer wirst du sein?</h2>
+    <p class="section-sub">Jede Rolle hat ihre Stärke, ihr Geheimnis und ihren Preis. Klicke auf eine Karte, um mehr zu erfahren.</p>
+
+    <div class="characters-grid">
+      <!-- RITTER -->
+      <div class="character-card ritter" onclick="openCharacterModal('ritter')">
+        <div class="character-avatar">⚔️</div>
+        <h3 class="character-name">Der Ritter</h3>
+        <p class="character-role">Anführer</p>
+        <p class="character-quote">"Ich entscheide. Ich trage die Konsequenz."</p>
+        <div class="character-details">
+          <p><strong>Deine Kraft:</strong> Du wählst, wohin die Gruppe geht.</p>
+          <p><strong>Dein Preis:</strong> Wenn du falsch liegst, verliert die ganze Gruppe.</p>
+        </div>
+        <div class="character-click-hint">Mehr erfahren</div>
+      </div>
+
+      <!-- HEXE -->
+      <div class="character-card hexe" onclick="openCharacterModal('hexe')">
+        <div class="character-avatar">🔮</div>
+        <h3 class="character-name">Die Hexe</h3>
+        <p class="character-role">Wahrsagerin</p>
+        <p class="character-quote">"Ich kenne den Preis. Und ich zahle ihn."</p>
+        <div class="character-details">
+          <p><strong>Deine Kraft:</strong> Exklusive Informationen nur für dich.</p>
+          <p><strong>Dein Preis:</strong> Mit großer Einsicht kommt große Verantwortung.</p>
+        </div>
+        <div class="character-click-hint">Mehr erfahren</div>
+      </div>
+
+      <!-- NARR -->
+      <div class="character-card narr" onclick="openCharacterModal('narr')">
+        <div class="character-avatar">🃏</div>
+        <h3 class="character-name">Der Narr</h3>
+        <p class="character-role">Kritiker</p>
+        <p class="character-quote">"Alle liegen falsch. Das ist mein Moment."</p>
+        <div class="character-details">
+          <p><strong>Deine Kraft:</strong> Du darfst alles in Frage stellen.</p>
+          <p><strong>Dein Preis:</strong> Deine Punkte sind der Gruppe gewidmet.</p>
+        </div>
+        <div class="character-click-hint">Mehr erfahren</div>
+      </div>
+    </div>
+
+    <!-- KASPAR FEATURED -->
+    <div class="character-featured">
+      <div class="character-featured-img">👻</div>
+      <div>
+        <h3>Kaspar Hauser — Dein Guide</h3>
+        <p class="character-quote">"Ich war verloren. Nun führe ich euch."</p>
+        <p>
+          Am 26. Mai 1828 tauchte Kaspar Hauser auf dem Unschlittplatz auf. Woher er kam, wer er war — niemand weiß es bis heute. 1833 wurde er ermordet. Sein Mörder wurde nie gefunden.
+        </p>
+        <p>
+          Kaspar ist nicht nur ein Audioguide — er ist dein Gesprächspartner. Jemand, der dir antwortet, dich befragt, und manchmal nicht sagt, was er weiß. Weil er sich selbst nicht kennt.
+        </p>
+        <button class="btn btn-gold" onclick="openCharacterModal('kaspar')">Kaspar kennenlernen</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHARACTER DETAIL MODAL -->
+<div id="character-modal">
+  <div class="character-modal-box">
+    <button class="character-modal-close" onclick="closeCharacterModal()">✕</button>
+    <div id="character-modal-content"></div>
+  </div>
+</div>
+
+<!-- TEST-RUNDGANG SECTION -->
+<section class="testrun-section" id="testrun">
+  <div class="container testrun-content">
+    <h2 class="testrun-headline">🎭 Kaspar Hauser — Ein Experiment</h2>
+    <p class="testrun-date">25. Mai 2026 · 198 Jahre nach seinem Erscheinen</p>
+
+    <div class="testrun-grid">
+      <div class="testrun-main">
+        <h3>Du wirst Teil eines historischen Moments</h3>
+        <p>
+          Am 26. Mai 1828 tauchte Kaspar Hauser auf dem Unschlittplatz auf. Genau <strong>198 Jahre später</strong>, am 25. Mai 2026, werden wir seinen Weg nachgehen — gemeinsam mit einer KI-gesteuerten Version von ihm, die Fragen beantwortet, die Wahrheit umdreht und immer flüstert.
+        </p>
+
+        <div class="testrun-highlight">
+          <h4>🎪 Was erwartet dich?</h4>
+          <p>✅ <strong>KI-generierte Videos</strong> von Kaspar Hauser an 4 historischen Orten</p>
+          <p>✅ <strong>Eine KI-Stimme</strong> (ElevenLabs), die dich durch den Stadtrundgang führt</p>
+          <p>✅ <strong>Live-Chatbot</strong> — du stellst Fragen, Kaspar antwortet (vom Team vorgelesen)</p>
+          <p>✅ <strong>Wir beobachten</strong> — was funktioniert? Was nicht? Dein Feedback formt die Zukunft.</p>
+        </div>
+
+        <p>
+          Das ist nicht die fertige App. Das ist ein <strong>Experiment, ein Testlauf, ein Moment der Zusammenarbeit</strong>. Wir bauen das zusammen mit dir.
+        </p>
+
+        <div class="testrun-cta">
+          <button class="btn" onclick="openSignupModal()">📍 Jetzt anmelden</button>
+          <button class="btn btn-secondary" onclick="document.getElementById('testrun-faq').scrollIntoView({behavior:'smooth'})">❓ FAQ lesen</button>
+        </div>
+
+        <div class="testrun-counter">
+          <div class="label">Plätze verfügbar</div>
+          <div class="number">15–20<span style="font-size:1rem; margin-left:0.5rem;">Personen</span></div>
+        </div>
+      </div>
+
+      <div class="testrun-side">
+        <h4>📅 Event-Details</h4>
+        <div class="testrun-side-item">
+          <strong>Datum</strong>
+          <p>Montag, 25. Mai 2026</p>
+        </div>
+        <div class="testrun-side-item">
+          <strong>Zeit</strong>
+          <p>21:00 — 22:00 Uhr (60 Min)</p>
+        </div>
+        <div class="testrun-side-item">
+          <strong>Ort</strong>
+          <p>Nürnberg Altstadt (4–5 Stationen)</p>
+        </div>
+        <div class="testrun-side-item">
+          <strong>Gruppengröße</strong>
+          <p>15–20 Personen max</p>
+        </div>
+        <div class="testrun-side-item">
+          <strong>Kosten</strong>
+          <p>Spendenbasis — gib, was dir fair erscheint 🙏</p>
+        </div>
+        <div class="testrun-side-item">
+          <strong>Niveau</strong>
+          <p>Für alle geeignet, keine Vorkenntnisse nötig</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEST-RUNDGANG FAQ -->
+    <div id="testrun-faq" style="margin-top:4rem; padding-top:2rem; border-top:2px solid rgba(255,255,255,0.2);">
+      <h3 style="margin-bottom:2rem; text-align:center;">Häufig gestellte Fragen</h3>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem; max-width:900px; margin:0 auto;">
+        <div>
+          <h4 style="margin-bottom:0.75rem; font-weight:700;">Warum 25. Mai?</h4>
+          <p>Kaspar Hauser tauchte am 26. Mai <strong>1828</strong> auf. Genau 198 Jahre später gedenken wir diesem Moment — und versuchen, seine Geschichte durch KI lebendig zu machen.</p>
+        </div>
+        <div>
+          <h4 style="margin-bottom:0.75rem; font-weight:700;">Ist das die App?</h4>
+          <p>Nein! Die vollständige App kommt im Q3 2026. Das ist ein <strong>Experiment, um zu lernen</strong> — dein Feedback formt, wie die App aussehen wird.</p>
+        </div>
+        <div>
+          <h4 style="margin-bottom:0.75rem; font-weight:700;">Wer kann teilnehmen?</h4>
+          <p>Jeder! Geschichte-Interessierte, Tech-Enthusiasten, Nürnberg-Fans, oder einfach Neugierige. Keine Vorkenntnisse nötig.</p>
+        </div>
+        <div>
+          <h4 style="margin-bottom:0.75rem; font-weight:700;">Kostet das etwas?</h4>
+          <p>Spendenbasis — unterstütze, wenn dir das Projekt gefällt 🙏 Keine Zwangsbeiträge, keine versteckten Kosten.</p>
+        </div>
+        <div>
+          <h4 style="margin-bottom:0.75rem; font-weight:700;">Was brauche ich?</h4>
+          <p>Nur dein Handy (optional GPS), gutes Wetter hoffen 😄, und die Bereitschaft, etwas Neues auszuprobieren.</p>
+        </div>
+        <div>
+          <h4 style="margin-bottom:0.75rem; font-weight:700;">Kann ich Feedback geben?</h4>
+          <p>Ja! Das ist der ganze Sinn. Wir sammeln dein Feedback mit QR-Code oder direktem Gespräch danach.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
 
+<!-- LEADERBOARD -->
+<section class="lb-section" id="leaderboard">
+  <div class="container">
+    <p class="section-label">Rangliste</p>
+    <h2 class="section-title">Top Detektive</h2>
+    <table class="lb-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Detektiv</th>
+          <th>Rang</th>
+          <th>Punkte</th>
+          <th>Stationen</th>
+        </tr>
+      </thead>
+      <tbody id="lb-body">
+        <tr><td colspan="5" class="lb-empty">Noch keine Spieler — sei der Erste!</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
 
-
+<!-- FAQ -->
+<section class="faq-section" id="faq">
+  <div class="container">
+    <p class="section-label">FAQ</p>
+    <h2 class="section-title">Häufige Fragen</h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">Kostet das Spiel etwas?</button>
+        <div class="faq-a">Komplett kostenlos. Kein Abo, keine In-App-Käufe.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">Muss ich in Nürnberg sein?</button>
+        <div class="faq-a">Für das vollständige Erlebnis ja — die Route führt durch die echte Altstadt. Der Demo-Modus (Chat) funktioniert aber von überall.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">Was passiert wenn ich 3 Mal falsch antworte?</button>
+        <div class="faq-a">Du wirst gesperrt. Ein QR-Code erscheint im Chat — finde einen anderen Menschen, zeige ihm den Code, er löst das Rätsel und gibt dir den Freischalt-Code.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">Wie lange dauert die Route?</button>
+        <div class="faq-a">Die 10 Stationen liegen auf einer ~4 km langen Rundroute durch die Nürnberger Altstadt. Rechne mit 4–5 Stunden inkl. Rätsellösung und kurzen Pausen.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">Kann ich als Gruppe spielen?</button>
+        <div class="faq-a">Ja! Das QR-Code-System ist perfekt für Gruppen — bei gesperrten Spielern können Mitspieler helfen und gemeinsam weitermachen.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">Datenschutz?</button>
+        <div class="faq-a">Wir speichern nur Benutzername, E-Mail und Spielstand. Kein Tracking, keine Weitergabe.</div>
+      </div>
+    </div>
+  </div>
+</section>
 
 
 <!-- FOOTER -->
@@ -1782,33 +2109,11 @@ document.getElementById('character-modal').addEventListener('click', function(e)
 
 // ===== PROFIL SYSTEM =====
 const PROFILE_WORDS = ['Schatten', 'Herz', 'Schloss', 'Geheimnis', 'Nacht', 'Brücke', 'Feuer', 'Wind', 'Stern', 'Wald', 'Stein', 'Lied', 'Furcht', 'Hoffnung', 'Zeit', 'Weg', 'Frage', 'Antwort', 'Traum', 'Wirklichkeit', 'Licht', 'Raum', 'Kraft', 'Wahrheit', 'Rätsel'];
-const MAX_SPOTS = 20;
-let totalProfiles = 0;
 let userProfile = null;
 let userLog = [];
 
-function updateAvailableSpots() {
-  const spots = MAX_SPOTS - totalProfiles;
-  const spotsElement = document.getElementById('available-spots');
-  if (spotsElement) {
-    spotsElement.textContent = Math.max(0, spots);
-
-    // Warnung wenn wenig Plätze frei
-    if (spots <= 5 && spots > 0) {
-      spotsElement.style.color = '#d97706';
-      spotsElement.style.fontWeight = '900';
-    } else if (spots <= 0) {
-      spotsElement.style.color = '#c0392b';
-      spotsElement.textContent = '0 (AUSGEBUCHT)';
-    }
-  }
-}
-
 function generateProfileCode() {
-  console.log('[PROFILE] generateProfileCode() aufgerufen');
   try {
-    console.log('PROFILE_WORDS verfügbar:', PROFILE_WORDS && PROFILE_WORDS.length > 0);
-
     const words = [];
     const indices = [];
 
@@ -1821,55 +2126,39 @@ function generateProfileCode() {
       }
     }
 
-    console.log('[PROFILE] Generierte Wörter:', words);
-
     if (words.length < 3) {
-      console.error('[PROFILE ERROR] Konnte nicht genug Wörter generieren');
+      console.error('Fehler: Konnte nicht genug Wörter generieren');
       alert('⚠️ Fehler beim Code-Generieren. Versuche erneut!');
       return;
     }
 
     const code = words.join(' ');
-    console.log('[PROFILE] Code:', code);
-
     const codeElement = document.getElementById('new-profile-code');
-    console.log('[PROFILE] Code-Element gefunden:', !!codeElement);
-
     if (codeElement) {
       codeElement.textContent = code;
       codeElement.style.color = 'var(--primary)';
-      codeElement.style.fontWeight = '700';
-      console.log('[PROFILE] Code angezeigt');
     }
 
     const btnElement = document.getElementById('start-quest-btn');
-    console.log('[PROFILE] Start-Button gefunden:', !!btnElement);
-
     if (btnElement) {
       btnElement.disabled = false;
-      console.log('[PROFILE] Start-Button aktiviert');
     }
 
     console.log('✓ Code generiert:', code);
     logEvent('generate-profile', { code });
   } catch (error) {
-    console.error('[PROFILE ERROR]', error);
+    console.error('Fehler in generateProfileCode:', error);
     alert('⚠️ Fehler beim Code-Generieren: ' + error.message);
   }
 }
 
 async function startQuestWithProfile() {
-  console.log('[QUEST] startQuestWithProfile() aufgerufen');
   try {
     const code = document.getElementById('new-profile-code').textContent;
-    console.log('[QUEST] Code:', code);
-
     if (code === '--- --- ---' || !code || code.trim() === '') {
       alert('⚠️ Bitte generiere zuerst einen Code!');
       return;
     }
-
-    console.log('[QUEST] Sende Profil zum Server...');
 
     // Speichere im Backend
     const response = await fetch('/api/profiles', {
@@ -1878,29 +2167,21 @@ async function startQuestWithProfile() {
       body: JSON.stringify({ code })
     });
 
-    console.log('[QUEST] API Response Status:', response.status);
-
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error('[QUEST ERROR] Response nicht ok:', errorText);
-      throw new Error(`API-Fehler ${response.status}: ${errorText}`);
+      throw new Error('API-Fehler beim Profil erstellen');
     }
 
     const data = await response.json();
-    console.log('[QUEST] Profil erstellt:', data);
-
     userProfile = data.profile;
     localStorage.setItem('kaspar_profile', JSON.stringify(userProfile));
-    totalProfiles++;
-    updateAvailableSpots();
     logEvent('profile-created', { code });
 
     closeQuestIntro();
     alert(`✅ Profil erstellt!\n\nDein Code: ${code}\n\n🎭 Die Quest beginnt jetzt...`);
     openDemoChat();
   } catch (error) {
-    console.error('[QUEST ERROR] Fehler beim Profil-Erstellen:', error);
-    alert('⚠️ Fehler: ' + error.message + '\n\nÖffne die Browser-Console (F12) um Details zu sehen');
+    console.error('Fehler beim Profil-Erstellen:', error);
+    alert('⚠️ Fehler: ' + error.message);
   }
 }
 
@@ -1946,29 +2227,22 @@ window.addEventListener('load', () => {
 
 // ===== LOGGING & DEBUG =====
 async function logEvent(eventName, data = {}) {
-  try {
-    const log = { timestamp: new Date().toISOString(), event: eventName, data };
-    userLog.push(log);
-    updateDebugPanel();
-    console.log('[KASPAR LOG]', log);
+  const log = { timestamp: new Date().toISOString(), event: eventName, data };
+  userLog.push(log);
+  updateDebugPanel();
+  console.log('[KASPAR LOG]', log);
 
-    // Sende auch zum Backend wenn Profil existiert
-    if (userProfile && userProfile.code) {
-      try {
-        const response = await fetch(`/api/profiles/${encodeURIComponent(userProfile.code)}/log`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ event: eventName, data })
-        });
-        if (!response.ok) {
-          console.warn('[LOG] Fehler beim Senden:', response.status);
-        }
-      } catch (err) {
-        console.warn('[LOG] Netzwerkfehler:', err.message);
-      }
+  // Sende auch zum Backend wenn Profil existiert
+  if (userProfile && userProfile.code) {
+    try {
+      await fetch(`/api/profiles/${encodeURIComponent(userProfile.code)}/log`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ event: eventName, data })
+      });
+    } catch (err) {
+      console.warn('Log nicht zum Server gesendet:', err);
     }
-  } catch (error) {
-    console.error('[LOG ERROR]', error);
   }
 }
 
@@ -1999,25 +2273,8 @@ function updateDebugPanel() {
 }
 
 // Zeige Debug Panel beim Laden
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
   console.log('✓ DOMContentLoaded - Debug System initialisiert');
-
-  // Test API Connection
-  console.log('[INIT] Teste API-Verbindung...');
-  try {
-    const healthResponse = await fetch('/api/health');
-    if (healthResponse.ok) {
-      const health = await healthResponse.json();
-      console.log('[INIT] ✅ API erreichbar:', health);
-      logEvent('api-connected', health);
-    } else {
-      console.error('[INIT] ❌ API antwortet mit Status:', healthResponse.status);
-      logEvent('api-error', { status: healthResponse.status });
-    }
-  } catch (error) {
-    console.error('[INIT] ❌ API nicht erreichbar:', error.message);
-    logEvent('api-offline', { error: error.message });
-  }
 
   const debugPanel = document.getElementById('debug-panel');
   if (debugPanel) {
@@ -2056,8 +2313,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
     console.log('✓ Quest Modal Event-Listener eingerichtet');
   }
-
-  console.log('[INIT] ✅ Alle Systeme initialisiert!');
 });
 
 // Überschreibe sendMessage um Fragen zu loggen

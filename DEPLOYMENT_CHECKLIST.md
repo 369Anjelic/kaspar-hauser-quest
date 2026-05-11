@@ -11,8 +11,8 @@
 Gehe zu: https://vercel.com/369anjelics-projects/kaspar-hauser-game-2/settings/environment-variables
 
 Füge hinzu:
-- `ANTHROPIC_API_KEY` = (dein API Key)
-- `DEEPGRAM_API_KEY` = (dein API Key)
+- `ANTHROPIC_API_KEY` = sk-ant-...
+- `DEEPGRAM_API_KEY` = ...
 
 ### 2️⃣ Redeploy
 Nach Schritt 1 klicke "Redeploy" auf dem letzten Deployment

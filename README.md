@@ -1,92 +1,76 @@
-# 🎭 Kaspar Hauser - Mittelalter Rätselspiel
+# Das Kaspar Hauser Spiel v4
 
-Interaktives Rätselabenteuer durch Nürnbergs Geschichte mit KI-gesteuertem Guide (Claude AI).
-
-## 🚀 Quick Start
-
-### Installation
-```bash
-npm install
-```
-
-### Environment Setup
-Kopiere `.env.example` zu `.env` und füge deine API Keys ein:
-```env
-ANTHROPIC_API_KEY=<your-key>
-DEEPGRAM_API_KEY=<your-key>
-PORT=3000
-```
-
-**APIs erforderlich:**
-- [Anthropic Claude API](https://console.anthropic.com/) - KI-Guide
-- [Deepgram API](https://console.deepgram.com/) - Text-to-Speech
-
-### Server starten
-```bash
-npm start          # Production
-npm run dev        # Development (mit Nodemon)
-```
-
-Server läuft auf: **http://localhost:3000**
-
-## 🎮 Spielablauf
-
-1. **Profil erstellen** - Eindeutigen Code eingeben
-2. **Quests lösen** - 10 mittelalterliche Rätsel in Nürnberg
-3. **Mit Claude chatten** - Hinweise und Lore erhalten
-4. **Punkte sammeln** - Erfolgreiche Lösungen belohnen
-
-### Quest-Beispiele
-- 🏛️ **Handwerkerhof** → "gold"
-- ⛪ **St. Lorenz Kirche** → "verkündigung"
-- 🏰 **Kaiserburg** → "reichskleinodien"
+Eine 3-6 Spieler GPS-gesteuerte narrative Stadtadventure in Nürnberg mit Mysterium-Lösung.
 
 ## 📁 Projektstruktur
 
 ```
-.
-├── api/index.js              # Express Backend
-├── kaspar-mittelalter-quest.html # Hauptspiel-UI
-├── public/                   # Alternative HTML-Versionen
-├── text_info/               # Lore & Dokumentation
-├── package.json             # Dependencies
-└── .env                      # Secrets (nicht commiten!)
+4 kaspar hauser 27.4.2026/
+├── kaspar-spiel-v4.html          ⭐ Hauptspiel (Single-File App)
+├── kaspar-mittelalter-quest.html  Landingpage / Homepage
+├── server.js                      Express Backend + Claude API
+├── package.json                   NPM Konfiguration
+├── .env                          API Keys & Config
+└── node_modules/                 Dependencies
 ```
 
-## 🔌 API Endpoints
+## 🎮 Spiel starten
 
-| Methode | Endpoint | Beschreibung |
-|---------|----------|-------------|
-| POST | `/api/profiles` | Profil erstellen |
-| GET | `/api/profiles/:code` | Profil + Logs abrufen |
-| POST | `/api/profiles/:code/log` | Event loggen |
-| POST | `/api/bot` | KI-Chat mit Kaspar |
-| POST | `/api/tts` | Text-to-Speech |
+### Option 1: Direkt ohne Server (Offline)
+Einfach öffnen: `kaspar-spiel-v4.html` im Browser
 
-## 🛠️ Tech Stack
+### Option 2: Mit Server & Claude AI (Online)
+1. **API Key hinzufügen:**
+   - Öffne `.env`
+   - Ersetze `sk-ant-YOUR_KEY_HERE` mit deinem echten ANTHROPIC_API_KEY
+   - Speichern
 
-- **Backend**: Express.js (Node.js 20+)
-- **AI**: Anthropic Claude API
-- **TTS**: Deepgram
-- **Frontend**: HTML5 + Vanilla JS
-- **CORS**: Enabled
+2. **Server starten:**
+   ```bash
+   npm start
+   ```
+   Server läuft dann auf `http://localhost:3000`
 
-## 📋 Requirements
+3. **Spiel öffnen:**
+   Öffne `http://localhost:3000/kaspar-spiel-v4.html`
 
-- Node.js 20.x+
-- npm/npx
-- Anthropic API Key
-- Deepgram API Key (optional)
+## ✨ Features
 
-## 🧪 Test
+- ✓ 3-6 Spieler-Setup mit Namensvergabe
+- ✓ Rollen: Ritter (⚔️), Hexe (🔮), Narr (🃏), Spieler (👤)
+- ✓ Geheimer "Unbekannter" - Eine Rolle ist der Nachfahre des Mörders
+- ✓ 10 historische Orte in Nürnberg
+- ✓ Rollen-spezifische Aufgaben & exklusive Hinweise
+- ✓ Gold-Münzen-Wetten mit Einfluss-Berechnung
+- ✓ Hexe kann 4x Kaspar befragen (exklusiv)
+- ✓ Narr kann Mehrheit widersprechen (50% Münzen an Gruppe)
+- ✓ Abstimmung: Wer ist der Unbekannte?
+- ✓ Finale mit Mörder-Enthüllung & Ranking
+- ✓ Mehrsprachig: Deutsch, English, Español
 
-```bash
-curl -X POST http://localhost:3000/api/profiles \
-  -H "Content-Type: application/json" \
-  -d '{"code":"test123"}'
-```
+## 🌍 Sprachen
+
+Die App unterstützt DE/EN/ES. Sprachauswahl über Dropdown oben rechts.
+
+## 📱 Responsive Design
+
+Funktioniert auf Desktop, Tablet & Mobile.
+
+## 🔧 Technologie
+
+- Frontend: HTML5 + CSS3 + JavaScript (Vanilla)
+- Backend: Node.js + Express
+- AI: Anthropic Claude API (für dynamische Kaspar-Antworten)
+- Design: Medieval Gothic Theme mit Gold-Akzenten
+
+## 📝 Nächste Schritte
+
+1. Teste das Spiel offline (`kaspar-spiel-v4.html`)
+2. Konfiguriere `.env` mit deinem Claude API Key
+3. Starte Server und teste Online-Integration
+4. Verfeinere Hinweise, Gold-Werte, oder Ort-Inhalte nach Bedarf
 
 ---
 
-**Setup**: ✅ Complete
-**Status**: Ready for testing (25.5.2026)
+🎭 **Das Kaspar Hauser Spiel - Version 4 (27.4.2026)**
+Powered by Unwritten Studio

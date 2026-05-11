@@ -9,4 +9,3 @@ dist/
 build/
 
 .vercel
-.env.example
