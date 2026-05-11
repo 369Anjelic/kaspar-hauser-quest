@@ -1,0 +1,23 @@
+{
+  "name": "kaspar-hauser-bot",
+  "version": "1.0.0",
+  "description": "Kaspar Hauser Medieval Quest Bot with Claude AI",
+  "main": "api/index.js",
+  "scripts": {
+    "start": "node api/index.js",
+    "dev": "nodemon api/index.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.24.0",
+    "axios": "^1.15.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": "20.x"
+  }
+}
