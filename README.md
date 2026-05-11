@@ -12,8 +12,8 @@ npm install
 ### Environment Setup
 Kopiere `.env.example` zu `.env` und füge deine API Keys ein:
 ```env
-ANTHROPIC_API_KEY=sk-ant-...
-DEEPGRAM_API_KEY=...
+ANTHROPIC_API_KEY=<your-key>
+DEEPGRAM_API_KEY=<your-key>
 PORT=3000
 ```
 

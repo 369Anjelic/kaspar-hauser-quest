@@ -450,14 +450,14 @@ npm install
 cp .env.example .env
 
 # 4. API Keys in .env eintragen
-# ANTHROPIC_API_KEY=sk-ant-...
-# DEEPGRAM_API_KEY=...
+# ANTHROPIC_API_KEY=<your-key>
+# DEEPGRAM_API_KEY=<your-key>
 
 # 5. Server starten
 npm start
 # oder manuell:
-# $env:ANTHROPIC_API_KEY="sk-ant-..."
-# $env:DEEPGRAM_API_KEY="..."
+# $env:ANTHROPIC_API_KEY="<your-key>"
+# $env:DEEPGRAM_API_KEY="<your-key>"
 # node api/index.js
 ```
 
